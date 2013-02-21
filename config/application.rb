@@ -84,15 +84,19 @@ module Discourse
 
     ## tjg regis cache for heroku ##
     # Use redis for our cache
-    # redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
-    #redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
+    redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
+    # redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
+    # redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
+    # config.cache_store = redis_store
 
     uri = URI.parse(ENV["REDISTOGO_URL"] || "redis://localhost:6379/" )
-    REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)    
-    redis_store = REDIS
-    
-    redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
-    config.cache_store = redis_store
+    redis_opts = {
+      host: redis_config["host"],
+      port: redis_config["port"],
+      password: uri.password,
+      namespace: -> { DiscourseRedis.namespace }
+    }
+    config.cache_store = :redis_store, redis_opts
 
     # Test with rack::cache disabled. Nginx does this for us
     config.action_dispatch.rack_cache =  nil

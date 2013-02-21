@@ -82,11 +82,11 @@ module Discourse
     # Our templates shouldn't start with 'discourse/templates'
     config.handlebars.templates_root = 'discourse/templates'
 
+    ## tjg disable regis cache for heroku ##
     # Use redis for our cache
-    redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
-    redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
-    redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
-    #tjg disable regis cache for heroku
+    # redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
+    # redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
+    # redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
     #config.cache_store = redis_store
 
     # Test with rack::cache disabled. Nginx does this for us

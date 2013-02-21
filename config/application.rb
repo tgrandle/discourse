@@ -82,10 +82,15 @@ module Discourse
     # Our templates shouldn't start with 'discourse/templates'
     config.handlebars.templates_root = 'discourse/templates'
 
-    ## tjg disable regis cache for heroku ##
+    ## tjg regis cache for heroku ##
     # Use redis for our cache
-    redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
-    redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
+    # redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
+    #redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
+
+    uri = URI.parse(ENV["REDISTOGO_URL"] || "redis://localhost:6379/" )
+    REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)    
+    redis_store = REDIS
+    
     redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
     config.cache_store = redis_store
 

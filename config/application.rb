@@ -91,8 +91,10 @@ module Discourse
 
     uri = URI.parse(ENV["REDISTOGO_URL"] || "redis://localhost:6379/" )
     redis_opts = {
-      host: redis_config["host"],
-      port: redis_config["port"],
+      #host: redis_config["host"],
+      #port: redis_config["port"],
+      host: uri.host,
+      port: uri.port,
       password: uri.password,
       namespace: -> { DiscourseRedis.namespace }
     }

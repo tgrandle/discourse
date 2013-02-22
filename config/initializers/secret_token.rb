@@ -13,12 +13,14 @@ if Rails.env.test? || Rails.env.development?
 else 
 	# tjg for heroku production
 	if Rails.env.production? && ENV['SECRET_TOKEN'].blank?
-	  raise 'SECRET_TOKEN environment variable must be set!'
+	  #let's hope heroku handles this at runtime
+	  #raise 'SECRET_TOKEN environment variable must be set!'
 	end	
 	Discourse::Application.config.secret_token = ENV['SECRET_TOKEN']
 
-	if Discourse::Application.config.secret_token.blank?
-  		raise "You must set a secret token in config/initializers/secret_token.rb"
-  	end
+	#let's hope heroku handles this at runtime
+	#if Discourse::Application.config.secret_token.blank?
+  	#	raise "You must set a secret token in config/initializers/secret_token.rb"
+  	#end
 end
 

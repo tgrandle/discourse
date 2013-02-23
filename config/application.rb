@@ -89,6 +89,10 @@ module Discourse
     # redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
     # config.cache_store = redis_store
 
+    # tjg
+    if ENV["REDISTOGO_URL"].blank?
+        raise 'REDISTOGO_URL environment variable must be set!'
+    end
     uri = URI.parse(ENV["REDISTOGO_URL"] || "redis://localhost:6379/" )
     redis_opts = {
       #host: redis_config["host"],
